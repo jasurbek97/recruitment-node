@@ -7,6 +7,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { EXPIRES_IN, JWT_SECRET } from '../../../env';
 import { email, password } from '../auth.dto';
 import { LoginInterface } from '../auth.interface';
+import { KnexModule } from 'nest-knexjs';
+import { KnexConfigService } from '../../../config/knex';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -15,6 +17,9 @@ describe('AuthController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
+        KnexModule.forRootAsync({
+          useClass: KnexConfigService,
+        }),
         PassportModule,
         JwtModule.register({
           secret: JWT_SECRET,

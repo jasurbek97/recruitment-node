@@ -17,7 +17,7 @@ export class AuthService {
   @Inject() private jwtService: JwtService;
 
   async login({ email, password }: LoginInterface) {
-    const user = this.userRepo.findOne(email);
+    const user = await this.userRepo.findOne(email);
     if (!user) {
       throw new NotFoundException('User not found!');
     }
@@ -25,7 +25,7 @@ export class AuthService {
     if (!is_match) {
       throw new BadRequestException('Email or password invalid!');
     }
-    const payload = getPayload(user);
+    const payload = getPayload(user as any);
     const token = this.jwtService.sign(payload, { secret: JWT_SECRET });
     return {
       access_token: token,

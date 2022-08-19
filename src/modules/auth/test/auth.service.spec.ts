@@ -6,6 +6,8 @@ import { LoginInterface } from '../auth.interface';
 import { email, password } from '../auth.dto';
 import { PassportModule } from '@nestjs/passport';
 import { EXPIRES_IN, JWT_SECRET } from '../../../env';
+import { KnexModule } from 'nest-knexjs';
+import { KnexConfigService } from '../../../config/knex';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -20,6 +22,9 @@ describe('AuthService', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         PassportModule,
+        KnexModule.forRootAsync({
+          useClass: KnexConfigService,
+        }),
         JwtModule.register({
           secret: JWT_SECRET,
           signOptions: { expiresIn: EXPIRES_IN },
@@ -39,7 +44,9 @@ describe('AuthService', () => {
 
   describe('login', () => {
     it('should return access_token', async () => {
-      jest.spyOn(userRepo, 'findOne').mockImplementation(() => mockUser);
+      jest
+        .spyOn(userRepo, 'findOne')
+        .mockImplementation(async () => await mockUser);
       jest.spyOn(jwtService, 'sign').mockImplementation(() => 'token');
       const response = await service.login(payload);
       expect(response).toHaveProperty('access_token');
@@ -51,7 +58,9 @@ describe('AuthService', () => {
 
     it('should return not found exception', async () => {
       try {
-        jest.spyOn(userRepo, 'findOne').mockImplementation(() => null);
+        jest
+          .spyOn(userRepo, 'findOne')
+          .mockImplementation(async () => await null);
         await service.login(payload);
       } catch (e) {
         expect(e.message).toBe('User not found!');
@@ -61,7 +70,9 @@ describe('AuthService', () => {
     it('should return bad request exception', async () => {
       try {
         payload['password'] = 'password1';
-        jest.spyOn(userRepo, 'findOne').mockImplementation(() => mockUser);
+        jest
+          .spyOn(userRepo, 'findOne')
+          .mockImplementation(async () => await mockUser);
         await service.login(payload);
       } catch (e) {
         expect(e.message).toBe('Email or password invalid!');
