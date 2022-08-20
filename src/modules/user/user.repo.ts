@@ -3,6 +3,7 @@ import { UserInterface } from './user.interface';
 import { Knex } from 'knex';
 import { InjectConnection } from 'nest-knexjs';
 import { email } from '../auth/auth.dto';
+import { users_table } from '../../db/migrations/20220819205703_create_users_table';
 
 export const mockUser: UserInterface = {
   id: '62f2ab79b9d51b1ff031ff3e',
@@ -14,7 +15,7 @@ export const mockUser: UserInterface = {
 
 @Injectable()
 export class UserRepo {
-  private table = 'users';
+  private table = users_table;
 
   constructor(@InjectConnection() private readonly knex: Knex) {}
 
