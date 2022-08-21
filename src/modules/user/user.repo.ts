@@ -33,4 +33,19 @@ export class UserRepo {
       throw new InternalServerErrorException('Something went wrong!');
     }
   }
+
+  async exist(
+    id: string,
+    knex = this.knex,
+  ): Promise<UserInterface | undefined> {
+    try {
+      return await knex
+        .select(['id', 'name', 'surname', 'email'])
+        .from(this.table)
+        .whereRaw(`id = '${id}'`)
+        .first();
+    } catch (e) {
+      throw new InternalServerErrorException('Something went wrong!');
+    }
+  }
 }

@@ -48,4 +48,38 @@ export class CarbonCertificateRepo {
       throw new InternalServerErrorException('Something went wrong!');
     }
   }
+
+  async exist(
+    carbon_certificate_id: string,
+    owner_id: string,
+    knex = this.knex,
+  ): Promise<CarbonCertificateInterface | undefined> {
+    try {
+      return await knex
+        .select(['id', 'country', 'status', 'owner'])
+        .from(this.table)
+        .whereRaw(`owner = '${owner_id}'`)
+        .whereRaw(`id = '${carbon_certificate_id}'`)
+        .first();
+    } catch (e) {
+      throw new InternalServerErrorException('Something went wrong!');
+    }
+  }
+
+  async update(
+    carbon_certificate_id: string,
+    data: any,
+    knex = this.knex,
+  ): Promise<CarbonCertificateInterface | undefined> {
+    try {
+      const [certificate]: any = await knex
+        .update(data, ['id', 'country', 'status', 'owner'])
+        .from(this.table)
+        .whereRaw(`id = '${carbon_certificate_id}'`);
+
+      return certificate;
+    } catch (e) {
+      throw new InternalServerErrorException('Something went wrong!');
+    }
+  }
 }

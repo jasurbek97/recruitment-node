@@ -6,3 +6,8 @@ export interface CarbonCertificateInterface {
   status: CarbonCertificateStatusEnum;
   owner: any;
 }
+
+export interface TransferCertificateInterface {
+  recipient_user_id: string;
+  carbon_certificate_id: string;
+}

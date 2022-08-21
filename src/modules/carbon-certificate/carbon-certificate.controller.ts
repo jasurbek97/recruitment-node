@@ -1,10 +1,11 @@
-import { Controller, HttpCode, Inject, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, Inject, Post } from '@nestjs/common';
 import { CarbonCertificateService } from './carbon-certificate.service';
 import { SecuredController } from '../secured.controller';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../../common/current-user.decorator';
 import { UserInterface } from '../user/user.interface';
 import { CarbonCertificateInterface } from './carbon-certificate.interface';
+import { TransferCertificateDto } from './carbon-certificate.dto';
 
 @Controller('carbon-certificate')
 @ApiTags('Carbon Certificate')
@@ -27,5 +28,19 @@ export class CarbonCertificateController extends SecuredController {
     @CurrentUser() user: UserInterface,
   ): Promise<CarbonCertificateInterface[]> {
     return this.carbonCertificateService.listOfOwnCertificates(user);
+  }
+
+  @ApiOperation({
+    summary:
+      'Transfer my own Carbon certificate to the another existing user (based on the User ID parameter)',
+  })
+  @ApiBody({ type: TransferCertificateDto })
+  @Post('transfer')
+  @HttpCode(200)
+  transfer(
+    @Body() payload: TransferCertificateDto,
+    @CurrentUser() user: UserInterface,
+  ): Promise<CarbonCertificateInterface> {
+    return this.carbonCertificateService.transfer(payload, user);
   }
 }
