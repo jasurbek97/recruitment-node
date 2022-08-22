@@ -7,12 +7,13 @@ import { KnexConfigService } from '../config/knex';
 import { CarbonCertificateModule } from '../modules/carbon-certificate/carbon-certificate.module';
 
 describe('AppModule', () => {
+  let appModule: AppModule;
   let authModule: AuthModule;
   let userModule: UserModule;
   let knexModule: KnexModule;
   let carbonCertificateModule: CarbonCertificateModule;
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    const appModule: TestingModule = await Test.createTestingModule({
       imports: [
         KnexModule.forRootAsync({
           useClass: KnexConfigService,
@@ -23,10 +24,10 @@ describe('AppModule', () => {
       ],
     }).compile();
 
-    knexModule = module.get<AuthModule>(KnexModule);
-    authModule = module.get<AuthModule>(AuthModule);
-    userModule = module.get<AuthModule>(UserModule);
-    carbonCertificateModule = module.get<CarbonCertificateModule>(
+    knexModule = appModule.get<KnexModule>(KnexModule);
+    authModule = appModule.get<AuthModule>(AuthModule);
+    userModule = appModule.get<UserModule>(UserModule);
+    carbonCertificateModule = appModule.get<CarbonCertificateModule>(
       CarbonCertificateModule,
     );
   });

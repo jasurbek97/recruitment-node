@@ -27,11 +27,6 @@ describe('CarbonCertificateRepo', () => {
   });
 
   describe('list', () => {
-    it('should return carbon certificate model', async () => {
-      const response = await repo.list();
-      expect(typeof response).toBe('object');
-    });
-
     it('should return internal server error', async () => {
       try {
         await repo.list('knex' as any);
@@ -43,11 +38,6 @@ describe('CarbonCertificateRepo', () => {
   });
 
   describe('listOfOwnCertificates', () => {
-    it('should return own carbon certificate model', async () => {
-      const response = await repo.listOfOwnCertificates(mockUser.id);
-      expect(typeof response).toBe('object');
-    });
-
     it('should return internal server error', async () => {
       try {
         await repo.listOfOwnCertificates(mockUser.id, 'knex' as any);
@@ -73,5 +63,15 @@ describe('CarbonCertificateRepo', () => {
       }
     });
   });
-  // TODO update repo test
+
+  describe('update', () => {
+    it('should return internal server error', async () => {
+      try {
+        await repo.update(mockUser.id, 'knex' as any);
+      } catch (e) {
+        expect(e.message).toBe('Something went wrong!');
+        expect(e.status).toBe(500);
+      }
+    });
+  });
 });
