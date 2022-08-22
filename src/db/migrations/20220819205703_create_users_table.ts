@@ -10,9 +10,6 @@ export async function up(knex: Knex): Promise<void> {
     table.string('email', 255).unique().index().notNullable();
     table.string('password', 100).notNullable();
   });
-  await knex.raw(
-    `grant delete, insert, select, truncate, update on ${users_table} to username`,
-  );
 }
 
 export async function down(knex: Knex): Promise<void> {

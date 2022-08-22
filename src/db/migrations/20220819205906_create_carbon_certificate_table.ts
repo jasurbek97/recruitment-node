@@ -17,9 +17,6 @@ export async function up(knex: Knex): Promise<void> {
       .inTable('users')
       .onDelete('cascade');
   });
-  await knex.raw(
-    `grant delete, insert, select, truncate, update on ${carbon_certificate_table} to username`,
-  );
 }
 
 export async function down(knex: Knex): Promise<void> {
